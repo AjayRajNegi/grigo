@@ -1,33 +1,81 @@
-import { UseAuth } from "@/app/contexts/AuthContext";
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { useAppContext } from "../../_contexts/AuthContext";
+import { Redirect } from "expo-router";
 
 export default function Tab() {
-  const router = useRouter();
-  useEffect(() => {
-    console.log("Hello");
-  });
+  const { isGuestMode, switchGuestMode } = useAppContext();
 
-  // const { userRole } = UseAuth();
-  const { authState } = UseAuth();
+  if (!isGuestMode) {
+    return <Redirect href="/(auth)/login" />;
+  }
 
   return (
-    <>
-      <SafeAreaView>
-        <View>
-          {/* <Text>Hello {userRole === "owner" ? `owner` : "user"}</Text> */}
-          <Text>Hello {authState === "guest" ? `guest` : "user"}</Text>
-
-          <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
-            <Text>Login page</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/(auth)/signup")}>
-            <Text>Signup page</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </>
+    <View style={styles.container}>
+      <Text style={styles.title}>Home Screen</Text>
+      <TouchableOpacity onPress={() => switchGuestMode()}>
+        <Text>Guest Mode {isGuestMode ? "True" : "False"}</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 40,
+    color: "#333",
+  },
+  valueContainer: {
+    backgroundColor: "white",
+    padding: 30,
+    borderRadius: 15,
+    marginBottom: 40,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    minWidth: 200,
+    alignItems: "center",
+  },
+  label: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 10,
+  },
+  value: {
+    fontSize: 48,
+    fontWeight: "bold",
+    color: "#007AFF",
+  },
+  buttonContainer: {
+    gap: 15,
+    width: "100%",
+    maxWidth: 300,
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  buttonSecondary: {
+    backgroundColor: "#34C759",
+  },
+  buttonDanger: {
+    backgroundColor: "#FF3B30",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
